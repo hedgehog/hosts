@@ -1,0 +1,15 @@
+#!/bin/bash 
+HOSTNAME=<%= @node['chef']['name'] %>
+FQDN=<%= @node['chef']['server_fqdn'] %>
+ORIGINAL_HOSTS_FILE_BACKUP=/etc/hosts.original
+cp /etc/hosts $ORIGINAL_HOSTS_FILE_BACKUP
+hostname $HOSTNAME
+IPADDR=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'|head -1`
+IPADDR2=`ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1}'|tail -1`
+echo $IPADDR >/tmp/ip_current
+sed -i "/127.0.0.1[[:space:]]localhost/{p;s/.*/${IPADDR} ${FQDN} ${HOSTNAME}/;}" /etc/hosts 
+sed -i "s/127.0.1.1[[:space:]]vagrantup.com[[:space:]]vagrantup/${IPADDR2} ${FQDN} ${HOSTNAME}/g" /etc/hosts
+NEW_HOSTS_FILE_BACKUP=/tmp/hosts-`date +%F-%s`
+cp /etc/hosts $NEW_HOSTS_FILE_BACKUP
+uniq $NEW_HOSTS_FILE_BACKUP /etc/hosts 
+cat /etc/hosts
