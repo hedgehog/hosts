@@ -1,6 +1,6 @@
 #!/bin/bash 
-HOSTNAME=<%= @node['chef']['name'] %>
-FQDN=<%= @node['chef']['server_fqdn'] %>
+HOSTNAME=<%= @node['chef_server']['name'] %>
+FQDN=<%= @node['chef_server']['server_fqdn'] %>
 ORIGINAL_HOSTS_FILE_BACKUP=/etc/hosts.original
 cp /etc/hosts $ORIGINAL_HOSTS_FILE_BACKUP
 hostname $HOSTNAME
